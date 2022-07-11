@@ -9,6 +9,8 @@ namespace HardwareReview.Helper
         public MappingProfiles()
         {
             CreateMap<Hardware, HardwareDto>();
+            CreateMap<Category, CategoryDto>();
+            CreateMap<Country, CountryDto>();
         }
     }
 }
