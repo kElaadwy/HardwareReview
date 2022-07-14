@@ -30,5 +30,17 @@ namespace HardwareReview.Repository
         {
            return _context.HardwareCategories.Where(x => x.CategoryId == categoryId).Select(y => y.Hardware).ToList();
         }
+
+        public bool CreateCategory(Category category)
+        {
+            _context.Categories.Add(category);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
     }
 }

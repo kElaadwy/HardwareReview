@@ -9,6 +9,8 @@ namespace HardwareReview.Repository
         Country GetCountryByCompany(int CompanyId);
         ICollection<Company> GetCompaniesFromCountry(int CountryId);
         bool CountryExists(int id);
+        bool CreateCountry(Country country);
+        bool Save();
 
     }
 }

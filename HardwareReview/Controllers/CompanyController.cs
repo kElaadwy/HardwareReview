@@ -10,12 +10,14 @@ namespace HardwareReview.Controllers
     [Route("api/[controller]")]
     public class CompanyController : Controller
     {
-        private readonly CompanyRepository _companyRepository;
+        private readonly ICompanyRepository _companyRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
 
-        public CompanyController(CompanyRepository companyRepository, IMapper mapper)
+        public CompanyController(ICompanyRepository companyRepository, ICountryRepository countryRepository, IMapper mapper)
         {
             _companyRepository = companyRepository;
+            _countryRepository = countryRepository;
             _mapper = mapper;
         }
 
@@ -79,6 +81,39 @@ namespace HardwareReview.Controllers
 
             return Ok(companies);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateCompany([FromQuery] int countryId, [FromBody] CompanyDto companyCreate)
+        {
+            if (companyCreate == null)
+                return BadRequest(ModelState);
+
+            var company = _companyRepository.GetCompanies().Where(c => c.Name.Trim().ToUpper() ==
+            companyCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (company is not null)
+            {
+                ModelState.AddModelError("", "Company already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var companyMap = _mapper.Map<Company>(companyCreate);
+            companyMap.Country = _countryRepository.GetCountryById(countryId);
+
+            if (!_companyRepository.CreateCompany(companyMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successfully created");
+        }
+
 
     }
 }

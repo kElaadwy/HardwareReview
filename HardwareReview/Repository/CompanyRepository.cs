@@ -40,5 +40,17 @@ namespace HardwareReview.Repository
         {
             return _context.HardwareCompanies.Where(x => x.CompanyId == CompanyId).Select(y => y.Hardware).ToList();
         }
+
+        public bool CreateCompany(Company company)
+        {
+            _context.Companies.Add(company);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
     }
 }

@@ -35,5 +35,17 @@ namespace HardwareReview.Repository
         {
             return _context.Countries.FirstOrDefault(x => x.Id == id);
         }
+
+        public bool CreateCountry(Country country)
+        {
+            _context.Countries.Add(country);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
     }
 }

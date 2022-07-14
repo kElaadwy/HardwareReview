@@ -8,6 +8,8 @@ namespace HardwareReview.Repository
         Category GetCategoryById(int id);
         ICollection<Hardware> GetHardwaresByCategory(int categoryId);
         bool CategoryExists(int categoryId);
+        bool CreateCategory(Category category);
+        bool Save();
 
     }
 }
