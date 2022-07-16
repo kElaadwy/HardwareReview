@@ -114,6 +114,34 @@ namespace HardwareReview.Controllers
             return Ok("successfully created");
         }
 
+        [HttpPut("{companyId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateCompany(int companyId, [FromBody] CompanyDto updateCompany)
+        {
+            if (updateCompany == null)
+                return BadRequest(ModelState);
+
+            if (companyId != updateCompany.Id)
+                return BadRequest(ModelState);
+
+            if (!_companyRepository.CompanyExists(companyId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var companyMap = _mapper.Map<Company>(updateCompany);
+
+            if (!_companyRepository.UpdateCompany(companyMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while Updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Udated successfully");
+        }
 
     }
 }

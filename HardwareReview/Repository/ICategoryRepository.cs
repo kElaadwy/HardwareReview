@@ -9,6 +9,7 @@ namespace HardwareReview.Repository
         ICollection<Hardware> GetHardwaresByCategory(int categoryId);
         bool CategoryExists(int categoryId);
         bool CreateCategory(Category category);
+        bool UpdateCategory(Category category);
         bool Save();
 
     }

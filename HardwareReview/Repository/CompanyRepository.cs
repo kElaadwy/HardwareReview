@@ -46,11 +46,17 @@ namespace HardwareReview.Repository
             _context.Companies.Add(company);
             return Save();
         }
+        public bool UpdateCompany(Company company)
+        {
+            _context.Companies.Update(company);
+            return Save();
+        }
 
         public bool Save()
         {
             var saved = _context.SaveChanges();
             return saved > 0;
         }
+
     }
 }

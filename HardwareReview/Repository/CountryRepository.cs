@@ -41,11 +41,17 @@ namespace HardwareReview.Repository
             _context.Countries.Add(country);
             return Save();
         }
+        public bool UpdateCountry(Country country)
+        {
+            _context.Countries.Update(country);
+            return Save();
+        }
 
         public bool Save()
         {
             var saved = _context.SaveChanges();
             return saved > 0;
         }
+
     }
 }

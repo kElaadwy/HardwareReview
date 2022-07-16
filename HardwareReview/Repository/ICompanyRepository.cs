@@ -11,6 +11,7 @@ namespace HardwareReview.Repository
         ICollection<Company> GetCompaniesOfHardware(int HardwareId);
         bool CompanyExists(int id);
         bool CreateCompany(Company company);
+        bool UpdateCompany(Company company);
         bool Save();
     }
 }
