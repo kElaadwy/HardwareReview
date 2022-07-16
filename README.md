@@ -8,5 +8,5 @@ HardwareReview is an API that allows it's user to do CRUD operations on:
 - A Review to Hardware
 - A Reviewer 
 
-the API have all kind of relationships
+the API have all kinds of relationships
 
