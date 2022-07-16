@@ -11,6 +11,7 @@ namespace HardwareReview.Repository
         {
             _context = context;
         }
+
         public Reviewer GetReviewerById(int id)
         {
             return _context.Reviewers.FirstOrDefault(r => r.Id == id);
@@ -29,6 +30,18 @@ namespace HardwareReview.Repository
         public bool ReviewerExists(int id)
         {
             return _context.Reviewers.Any(r => r.Id == id);
+        }
+
+        public bool CreateReviewer(Reviewer reviewer)
+        {
+            _context.Reviewers.Add(reviewer);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
         }
     }
 }

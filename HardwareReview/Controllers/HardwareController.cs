@@ -63,5 +63,37 @@ namespace HardwareReview.Controllers
             return Ok(rating);
         }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateHardware([FromQuery] int companyId, [FromQuery] int categoryId, [FromBody] HardwareDto hardwareCreate)
+        {
+            if (hardwareCreate == null)
+                return BadRequest(ModelState);
+
+            var hardware = _hardwareRepository.GetHardwares().Where(c => c.Name.Trim().ToUpper() ==
+            hardwareCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (hardware is not null)
+            {
+                ModelState.AddModelError("", "Hardware already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var hardwareMap = _mapper.Map<Hardware>(hardwareCreate);
+
+            if (!_hardwareRepository.CreateHardware(companyId, categoryId, hardwareMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successfully created");
+        }
+
+
     }
 }

@@ -12,11 +12,16 @@ namespace HardwareReview.Controllers
     public class ReviewController: Controller
     {
         private readonly IReviewRepository _reviewRepository;
+        private readonly IReviewerRepository _reviewerRepository;
+        private readonly IHardwareRepository _hardwareRepository;
         private readonly IMapper _mapper;
 
-        public ReviewController(IReviewRepository reviewRepository, IMapper mapper)
+        public ReviewController(IReviewRepository reviewRepository, IReviewerRepository reviewerRepository,
+            IHardwareRepository hardwareRepository, IMapper mapper)
         {
             _reviewRepository = reviewRepository;
+            _reviewerRepository = reviewerRepository;
+            _hardwareRepository = hardwareRepository;
             _mapper = mapper;
         }
 
@@ -61,6 +66,31 @@ namespace HardwareReview.Controllers
 
             return Ok(reviews);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReview([FromQuery] int reviewrId,[FromQuery] int hardwareId, [FromBody] ReviewDto reviewCreate)
+        {
+            if (reviewCreate == null)
+                return BadRequest(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviewMap = _mapper.Map<Review>(reviewCreate);
+            reviewMap.Reviewer = _reviewerRepository.GetReviewerById(reviewrId);
+            reviewMap.Hardware = _hardwareRepository.GetHardwareById(hardwareId);
+
+            if (!_reviewRepository.CreateReview(reviewMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successfully created");
+        }
+
 
     }
 }

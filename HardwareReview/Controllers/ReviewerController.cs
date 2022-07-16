@@ -40,7 +40,7 @@ namespace HardwareReview.Controllers
             if (!_reviewerRepository.ReviewerExists(Id))
                 return NotFound();
 
-            var reviewer = _mapper.Map<ReviewDto>(_reviewerRepository.GetReviewerById(Id));
+            var reviewer = _mapper.Map<ReviewerDto>(_reviewerRepository.GetReviewerById(Id));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -63,6 +63,29 @@ namespace HardwareReview.Controllers
 
             return Ok(reviews);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReviewer([FromBody] ReviewerDto reviewerCreate)
+        {
+            if (reviewerCreate == null)
+                return BadRequest(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviewerMap = _mapper.Map<Reviewer>(reviewerCreate);
+
+            if (!_reviewerRepository.CreateReviewer(reviewerMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successfully created");
+        }
+
 
     }
 }

@@ -44,5 +44,43 @@ namespace HardwareReview.Repository
         {
             return _context.Hardwares.Any(x => x.Id == HardwareId);
         }
+
+        public bool CreateHardware(int companyId, int categoryId, Hardware hardware)
+        {
+            var company = _context.Companies.FirstOrDefault(c => c.Id == companyId);
+            var category = _context.Categories.FirstOrDefault(c => c.Id == categoryId);
+
+            var hardwareCompany = new HardwareCompany()
+            {
+                CompanyId = companyId,
+                Company = company,
+
+                HardwareId = hardware.Id,
+                Hardware = hardware,
+            };
+
+            _context.HardwareCompanies.Add(hardwareCompany);
+
+            var hardwareCategory = new HardwareCategory()
+            {
+                CategoryId = categoryId,
+                Category = category,
+
+                HardwareId = hardware.Id,
+                Hardware = hardware
+            };
+
+            _context.HardwareCategories.Add(hardwareCategory);
+
+            _context.Hardwares.Add(hardware);
+
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
     }
 }

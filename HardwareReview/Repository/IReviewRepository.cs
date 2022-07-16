@@ -8,5 +8,7 @@ namespace HardwareReview.Repository
         Review GetReviewById(int id);
         ICollection<Review> GetReviewsOfHardware(int hardwareId);
         bool ReviewExists(int id);
+        bool CreateReview(Review review);
+        bool Save();
     }
 }
